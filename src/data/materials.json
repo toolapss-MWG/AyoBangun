@@ -1,0 +1,32 @@
+[
+  {
+    "nama": "Besi Beton",
+    "variant": "\u00d88",
+    "satuan": "batang"
+  },
+  {
+    "nama": "Besi Beton",
+    "variant": "\u00d810",
+    "satuan": "batang"
+  },
+  {
+    "nama": "Semen",
+    "variant": "50kg",
+    "satuan": "sak"
+  },
+  {
+    "nama": "Pasir Beton",
+    "variant": "",
+    "satuan": "m3"
+  },
+  {
+    "nama": "Bendrat",
+    "variant": "",
+    "satuan": "kg"
+  },
+  {
+    "nama": "Paku 4cm",
+    "variant": "",
+    "satuan": "kg"
+  }
+]
