@@ -1,0 +1,25 @@
+{
+  "material_categories": [
+    "Beton",
+    "Besi",
+    "Dinding",
+    "Finishing",
+    "Plumbing",
+    "Electrical",
+    "Kayu",
+    "Alat Kerja",
+    "Consumable"
+  ],
+  "sample_items": [
+    "Semen Portland",
+    "Pasir Beton",
+    "Batu Split",
+    "Besi Beton 10mm",
+    "Bata Ringan",
+    "Cat Interior",
+    "Pipa PVC",
+    "Kabel NYM",
+    "Multiplek",
+    "Bor Tangan"
+  ]
+}
