@@ -1,0 +1,8 @@
+{
+  "name": "Ayo Bangun.ID Contractor",
+  "short_name": "AyoBangun",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#101827",
+  "theme_color": "#c89b3c"
+}
