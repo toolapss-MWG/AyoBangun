@@ -1,0 +1,64 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function signedIn() { return request.auth != null; }
+    function profile(orgId) { return get(/databases/$(database)/documents/organizations/$(orgId)/users/$(request.auth.uid)).data; }
+    function member(orgId) { return signedIn() && exists(/databases/$(database)/documents/organizations/$(orgId)/users/$(request.auth.uid)); }
+    function owner(orgId) { return member(orgId) && profile(orgId).role == 'owner'; }
+    function admin(orgId) { return member(orgId) && profile(orgId).role in ['owner','admin']; }
+    function mandor(orgId) { return member(orgId) && profile(orgId).role == 'mandor'; }
+
+    match /organizations/{orgId} {
+      allow read: if member(orgId);
+      allow create, update: if owner(orgId);
+      allow delete: if false;
+    }
+    match /organizations/{orgId}/users/{uid} {
+      allow read: if member(orgId);
+      allow create, update: if admin(orgId);
+      allow delete: if owner(orgId);
+    }
+    match /organizations/{orgId}/projects/{id} {
+      allow read: if member(orgId);
+      allow write: if admin(orgId);
+    }
+    match /organizations/{orgId}/materials/{id} {
+      allow read: if member(orgId);
+      allow write: if admin(orgId);
+    }
+    match /organizations/{orgId}/stock/{id} {
+      allow read: if member(orgId);
+      allow create: if member(orgId);
+      allow update: if admin(orgId) || (mandor(orgId) && resource.data.createdBy == request.auth.uid && resource.data.status == 'pending');
+      allow delete: if admin(orgId);
+    }
+    match /organizations/{orgId}/usage/{id} {
+      allow read: if member(orgId);
+      allow create: if member(orgId);
+      allow update: if admin(orgId) || (mandor(orgId) && resource.data.createdBy == request.auth.uid && resource.data.status == 'pending');
+      allow delete: if admin(orgId);
+    }
+    match /organizations/{orgId}/attendance/{id} {
+      allow read, create, update: if member(orgId);
+      allow delete: if admin(orgId);
+    }
+    match /organizations/{orgId}/progress/{id} {
+      allow read: if member(orgId);
+      allow create, delete: if admin(orgId);
+      allow update: if admin(orgId) || (mandor(orgId) && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['actualQty','percent','notes','updatedAt','updatedBy']));
+    }
+    match /organizations/{orgId}/{collection}/{id} {
+      allow read: if member(orgId) && collection in ['issues','reports','tools','toolLogs','hse'];
+      allow create, update: if member(orgId) && collection in ['issues','reports','hse'];
+      allow create, update, delete: if admin(orgId) && collection in ['tools','toolLogs'];
+      allow delete: if admin(orgId) && collection in ['issues','reports','hse'];
+    }
+    match /organizations/{orgId}/{collection}/{id} {
+      allow read, write: if admin(orgId) && collection in ['rab','suppliers','purchases','audit'];
+    }
+    match /organizations/{orgId}/settings/{id} {
+      allow read: if member(orgId);
+      allow write: if owner(orgId);
+    }
+  }
+}
