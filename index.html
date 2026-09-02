@@ -1,106 +1,47 @@
-
-<!DOCTYPE html>
+<!doctype html>
 <html lang="id">
 <head>
-<meta charset="UTF-8">
+<meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Ayo Bangun.ID Contractor</title>
 <link rel="manifest" href="manifest.json">
 <style>
-body{margin:0;background:#101827;color:#fff;font-family:Arial}
-header{background:#17243b;padding:20px;text-align:center}
-.logo{width:90px;border-radius:15px}
-nav button{margin:5px;padding:12px;border:0;border-radius:10px;background:#c89b3c}
-main{padding:15px}
-.card{background:#1d304f;padding:15px;margin:10px 0;border-radius:12px}
-input,select{padding:10px;width:90%;margin:5px}
+body{margin:0;font-family:Arial;background:#0f172a;color:#fff}
+header{background:#16233b;padding:15px;text-align:center}.logo{width:90px;border-radius:15px}
+nav{display:flex;flex-wrap:wrap;gap:8px;padding:10px}
+button{background:#c89b3c;border:0;border-radius:10px;padding:12px}
+main{padding:12px}.card{background:#1e293b;padding:15px;border-radius:12px;margin:10px 0}
+input,select,textarea{width:95%;padding:10px;margin:5px;border-radius:8px}
+table{width:100%;background:white;color:#111}
 </style>
 </head>
 <body>
-<header>
-<img class="logo" src="assets/logo.jpg">
-<h2>Ayo Bangun.ID Contractor</h2>
-<div>Construction Project Management</div>
-</header>
-
-<main id="app"></main>
-
+<header><img class="logo" src="assets/logo.jpg"><h2>Ayo Bangun.ID Contractor</h2></header>
+<nav id="nav"></nav><main id="app"></main>
 <script>
-let db={
-projects:[
-{name:"Gedung Kantor ABC",progress:65},
-{name:"Rumah Tinggal",progress:40}
-],
-materials:[
-{name:"Semen Portland",stock:"250 Zak"},
-{name:"Besi Ulir 13mm",stock:"120 Batang"},
-{name:"Pasir Beton",stock:"15 m3"}
-],
-attendance:[],
-reports:[]
-};
-
-function save(){localStorage.setItem("ayoDB",JSON.stringify(db))}
-let old=localStorage.getItem("ayoDB");
-if(old) db=JSON.parse(old);
-
-function render(){
-document.getElementById("app").innerHTML=`
-<nav>
-<button onclick="dashboard()">Dashboard</button>
-<button onclick="material()">Material</button>
-<button onclick="report()">Laporan</button>
-<button onclick="attendance()">Absensi</button>
-</nav>
-<div id="view"></div>`;
-dashboard();
-}
-
-function dashboard(){
-view.innerHTML=`
-<div class="card">Project Aktif: ${db.projects.length}</div>
-<div class="card">Material: ${db.materials.length} Item</div>
-<div class="card">Laporan: ${db.reports.length}</div>
-${db.projects.map(x=>`<div class="card">${x.name}<br>Progress ${x.progress}%</div>`).join("")}`;
-}
-
-function material(){
-view.innerHTML=`<h3>Katalog Material</h3>${db.materials.map(x=>`<div class="card">${x.name}<br>${x.stock}</div>`).join("")}
-<div class="card">
-<input id="m" placeholder="Nama Material">
-<button onclick="addMaterial()">Tambah</button>
-</div>`;
-}
-function addMaterial(){
-db.materials.push({name:m.value,stock:"0"});
-save();material();
-}
-
-function attendance(){
-view.innerHTML=`
-<h3>Absensi Tenaga Kerja</h3>
-<input id="worker" placeholder="Nama pekerja">
-<button onclick="addAbs()">Simpan</button>
-<div class="card">${db.attendance.join("<br>")}</div>`;
-}
-function addAbs(){
-db.attendance.push(worker.value+" hadir");
-save();attendance();
-}
-
-function report(){
-view.innerHTML=`
-<h3>Laporan Harian</h3>
-<input id="txt" placeholder="Pekerjaan hari ini">
-<button onclick="addReport()">Simpan</button>`;
-}
-function addReport(){
-db.reports.push(txt.value);save();report();
-}
-
-render();
-
-if("serviceWorker" in navigator) navigator.serviceWorker.register("sw.js");
+const defaultDB={users:[{name:"Owner",role:"Owner"}],projects:[],materials:[
+{name:"Semen Portland",unit:"Zak",stock:0},{name:"Pasir Beton",unit:"m3",stock:0},{name:"Besi Ulir 13mm",unit:"Batang",stock:0}],attendance:[],reports:[],issues:[]};
+let db=JSON.parse(localStorage.getItem("ayoDB")||JSON.stringify(defaultDB));
+const save=()=>localStorage.setItem("ayoDB",JSON.stringify(db));
+function menu(){nav.innerHTML=["Dashboard","Project","Material","Stok","Absensi","Progress","Laporan","Kendala"].map(x=>`<button onclick="openPage('${x}')">${x}</button>`).join("")}
+function openPage(p){
+let h="";
+if(p=="Dashboard")h=`<div class=card>Project ${db.projects.length}</div><div class=card>Material ${db.materials.length}</div><div class=card>Laporan ${db.reports.length}</div>`;
+if(p=="Project")h=`<h3>Project</h3>${db.projects.map(x=>`<div class=card>${x.name} ${x.progress||0}%</div>`).join("")}<input id=n placeholder="Nama Project"><button onclick="addProject()">Tambah</button>`;
+if(p=="Material")h=`<h3>Material</h3>${db.materials.map(x=>`<div class=card>${x.name} | ${x.stock} ${x.unit}</div>`).join("")}`;
+if(p=="Stok")h=`<h3>Input Stok</h3><input id=stok placeholder="Jumlah"><button onclick="addStock()">Simpan</button>`;
+if(p=="Absensi")h=`<h3>Absensi</h3><input id=w placeholder="Nama pekerja"><button onclick="absen()">Hadir</button><div class=card>${db.attendance.join("<br>")}</div>`;
+if(p=="Progress")h=`<h3>Update Progress</h3><input id=pr placeholder="Progress %"><button onclick="progress()">Update</button>`;
+if(p=="Laporan")h=`<h3>Laporan Harian</h3><textarea id=r></textarea><button onclick="report()">Simpan</button>`;
+if(p=="Kendala")h=`<h3>Kendala</h3><textarea id=i></textarea><button onclick="issue()">Simpan</button>`;
+app.innerHTML=h}
+function addProject(){db.projects.push({name:n.value,progress:0});save();openPage("Project")}
+function addStock(){db.materials[0].stock+=Number(stok.value);save();openPage("Stok")}
+function absen(){db.attendance.push(w.value+" hadir");save();openPage("Absensi")}
+function progress(){if(db.projects[0])db.projects[0].progress=pr.value;save()}
+function report(){db.reports.push(r.value);save()}
+function issue(){db.issues.push(i.value);save()}
+menu();openPage("Dashboard");
+if("serviceWorker"in navigator)navigator.serviceWorker.register("sw.js");
 </script>
-</body>
-</html>
+</body></html>
