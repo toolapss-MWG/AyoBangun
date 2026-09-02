@@ -1,24 +1,30 @@
 
-# Ayo Bangun.ID Contractor
+# Ayo Bangun.ID Contractor Pro v1
 
-Construction Project Management ERP berbasis Flutter + Firebase.
+Construction ERP Mobile Application.
 
-Fitur:
-- Multi project construction management
-- Role Owner, Admin, Mandor
-- Material catalog
-- Stock opname
-- Material usage approval
+Technology:
+- Flutter
+- Firebase Authentication
+- Cloud Firestore
+- Firebase Storage
+- Firebase Cloud Messaging
+- Firebase Functions
+
+Modules:
+- Multi Project
+- Owner/Admin/Mandor Role
+- Material Catalog
+- Warehouse Stock
+- Material Approval
 - Attendance
-- Daily report
-- Progress target
-- Issue/kendala pekerjaan
-- Firebase realtime synchronization
-- WhatsApp report integration ready
+- Progress Tracking
+- Daily Report
+- Photo Documentation
+- Issue Management
+- User Management
+- Audit Log
+- WhatsApp Report Ready
 
-## Login default development
-Admin:
-username: admin
-password: 0000
-
-Konfigurasi Firebase diperlukan pada firebase_options.dart.
+Default development login:
+admin / 0000

@@ -1,0 +1,51 @@
+{
+  "categories": {
+    "Beton": [
+      "Semen Portland",
+      "Pasir Beton",
+      "Batu Split",
+      "Ready Mix K250"
+    ],
+    "Besi": [
+      "Besi Polos 8mm",
+      "Besi Ulir 13mm",
+      "Wiremesh M6"
+    ],
+    "Dinding": [
+      "Bata Merah",
+      "Bata Ringan",
+      "Mortar"
+    ],
+    "Finishing": [
+      "Cat",
+      "Keramik",
+      "Granit",
+      "Waterproofing"
+    ],
+    "Plumbing": [
+      "PVC",
+      "PPR",
+      "Valve"
+    ],
+    "Electrical": [
+      "Kabel NYM",
+      "MCB",
+      "Lampu LED"
+    ],
+    "Tools": [
+      "Bor",
+      "Gerinda",
+      "Mixer Beton"
+    ]
+  },
+  "units": [
+    "pcs",
+    "zak",
+    "kg",
+    "ton",
+    "m",
+    "m2",
+    "m3",
+    "liter"
+  ]
+}
